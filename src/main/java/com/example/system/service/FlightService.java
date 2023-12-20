@@ -1,11 +1,13 @@
 package com.example.system.service;
 
+import com.example.system.entity.Airline;
 import com.example.system.entity.Flight;
 import com.example.system.repository.FlightsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.support.StandardMultipartHttpServletRequest;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -29,12 +31,8 @@ public class FlightService {
    }
 
 
-   public Flight updateFlight(int id, Flight updatedFlightData){
-      Flight existingFlight = flightsRepository.findById(id).orElse(null);
-
-      if (existingFlight == null){
-         return null;
-      }
+   public Flight updateFlight(Flight updatedFlightData){
+      Flight existingFlight = flightsRepository.findById(updatedFlightData.getFlightId()).orElseThrow();
 
       existingFlight.setAirline(updatedFlightData.getAirline());
       existingFlight.setOriginAirport(updatedFlightData.getOriginAirport());
@@ -43,6 +41,10 @@ public class FlightService {
       existingFlight.setArrivalTime(updatedFlightData.getArrivalTime());
 
       return flightsRepository.save(existingFlight);
+   }
+
+   public Flight getFlightsByAirline(Airline airline){
+      return flightsRepository.findFlightsByAirline(airline).orElseThrow();
    }
 
 }
